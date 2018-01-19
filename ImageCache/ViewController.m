@@ -10,6 +10,8 @@
 
 @interface ViewController ()
 
+@property (retain, nonatomic) UIImageView *imgView;
+
 @end
 
 @implementation ViewController
@@ -17,6 +19,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+        NSData *imgData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:@"https://i.loli.net/2018/01/19/5a6163f324673.gif"]];
+        [imgData writeToFile:@"cache path" atomically:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImage *img = [[UIImage alloc] initWithData:imgData];
+            self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
+            self.imgView.image = img;
+            [self.view addSubview:self.imgView];
+        });
+    });
+    
 }
 
 
